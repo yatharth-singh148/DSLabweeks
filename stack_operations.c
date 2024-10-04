@@ -31,7 +31,7 @@ int pop()
 int display()
 {
     printf("\n");
-    for(int i=0;i<=top;i++)
+    for(int i=top;i>=0;i--)
     {
         printf("%d\t",arr[i]);
     }

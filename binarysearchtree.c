@@ -55,6 +55,68 @@ void inorder(struct Node* root) {
     }
 }
 
+// Pre-order traversal (root, left, right)
+void preorder(struct Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+// Post-order traversal (left, right, root)
+void postorder(struct Node* root) {
+    if (root != NULL) {
+        postorder(root->left);
+        postorder(root->right);
+        printf("%d ", root->data);
+    }
+}
+
+// Find the node with the minimum value in the BST
+struct Node* findMin(struct Node* root) {
+    while (root->left != NULL)
+        root = root->left;
+    return root;
+}
+
+// Delete a node from the binary search tree
+struct Node* deleteNode(struct Node* root, int key) {
+    // Base case: root is null
+    if (root == NULL)
+        return root;
+
+    // If the key to be deleted is smaller than the root's data
+    if (key < root->data)
+        root->left = deleteNode(root->left, key);
+    // If the key to be deleted is greater than the root's data
+    else if (key > root->data)
+        root->right = deleteNode(root->right, key);
+    // If key is the same as root's data, this is the node to be deleted
+    else {
+        // Node with only one child or no child
+        if (root->left == NULL) {
+            struct Node* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            struct Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // Node with two children: Get the inorder successor (smallest in the right subtree)
+        struct Node* temp = findMin(root->right);
+
+        // Copy the inorder successor's content to this node
+        root->data = temp->data;
+
+        // Delete the inorder successor
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
+}
+
 // Main function to demonstrate the operations
 int main() {
     struct Node* root = NULL;
@@ -65,7 +127,10 @@ int main() {
         printf("1. Insert a node\n");
         printf("2. Search for a node\n");
         printf("3. In-order traversal\n");
-        printf("4. Exit\n");
+        printf("4. Pre-order traversal\n");
+        printf("5. Post-order traversal\n");
+        printf("6. Delete a node\n");
+        printf("7. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -97,6 +162,28 @@ int main() {
                 break;
 
             case 4:
+                // Pre-order traversal
+                printf("Pre-order traversal of the binary search tree: ");
+                preorder(root);
+                printf("\n");
+                break;
+
+            case 5:
+                // Post-order traversal
+                printf("Post-order traversal of the binary search tree: ");
+                postorder(root);
+                printf("\n");
+                break;
+
+            case 6:
+                // Delete a node
+                printf("Enter value to delete: ");
+                scanf("%d", &value);
+                root = deleteNode(root, value);
+                printf("Node %d deleted (if it existed).\n", value);
+                break;
+
+            case 7:
                 // Exit
                 printf("Exiting...\n");
                 exit(0);
